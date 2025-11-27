@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Ruta McPato - Educación Financiera</title>
+    <style>
+        :root {
+            --necesidades: #4CAF50;
+            --deseos: #FF9800;
+            --ahorro: #2196F3;
+            --dark: #2C3E50;
+            --light: #ECF0F1;
+            --accent: #E74C3C;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .rules-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .rules-container {
+                flex-direction: column;
+            }
+        }
+        
+        .rule {
+            flex: 1;
+            text-align: center;
+            padding: 20px 15px;
+            border-radius: 15px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .rule.necesidades {
+            background: var(--necesidades);
+        }
+        
+        .rule.deseos {
+            background: var(--deseos);
+        }
+        
+        .rule.ahorro {
+            background: var(--ahorro);
+        }
+        
+        .rule-value {
+            font-size: 1.8rem;
+            margin: 10px 0;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.active {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-category {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-icon {
+            font-size: 1.8rem;
+        }
+        
+        .result-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            height: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.8s ease;
+        }
+        
+        .progress.necesidades {
+            background: var(--necesidades);
+            width: 50%;
+        }
+        
+        .progress.deseos {
+            background: var(--deseos);
+            width: 30%;
+        }
+        
+        .progress.ahorro {
+            background: var(--ahorro);
+            width: 20%;
+        }
+        
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+        
+        .tips-section {
+            margin-top: 40px;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .tip-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .tip-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .personajes-section {
+            margin-top: 50px;
+        }
+        
+        .personajes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .personaje-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .personaje-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .personaje-name {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .motivation-message {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🦆💰</div>
+                <div>
+                    <h1>Mi Ruta McPato</h1>
+                    <p class="tagline">Aprende a gestionar tu dinero con la Regla 50/30/20 y cumple tus metas financieras</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h2 class="card-title">
+                    <span>📝</span>
+                    Calculadora 50/30/20
+                </h2>
+                <p>Como Ana en la obra, aprende a controlar tus gastos con este método probado.</p>
+                
+                <div class="input-group">
+                    <label for="monthlyIncome">Ingresos Mensuales ($)</label>
+                    <input type="number" id="monthlyIncome" placeholder="Ej: 2000" min="1">
+                </div>
+                
+                <div class="rules-container">
+                    <div class="rule necesidades">
+                        <div>Necesidades</div>
+                        <div class="rule-value">50%</div>
+                        <div>Vivienda, comida, transporte</div>
+                    </div>
+                    <div class="rule deseos">
+                        <div>Deseos</div>
+                        <div class="rule-value">30%</div>
+                        <div>Entretenimiento, gustos</div>
+                    </div>
+                    <div class="rule ahorro">
+                        <div>Ahorro</div>
+                        <div class="rule-value">20%</div>
+                        <div>Futuro, inversiones</div>
+                    </div>
+                </div>
+                
+                <button id="calculateBudget">Calcular Mi Presupuesto</button>
+            </div>
+            
+            <div class="card results" id="resultsCard">
+                <h2 class="card-title">
+                    <span>📊</span>
+                    Tu Presupuesto Mensual
+                </h2>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress necesidades"></div>
+                        <div class="progress deseos"></div>
+                        <div class="progress ahorro"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>Necesidades (50%)</span>
+                        <span>Deseos (30%)</span>
+                        <span>Ahorro (20%)</span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-category">
+                        <span class="category-icon">🏠</span>
+                        <span>Necesidades</span>
+                    </div>
+                    <div class="result-amount" id="necesidadesAmount">$1000</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-category">
+                        <span class="category-icon">🎮</span>
+                        <span>Deseos</span>
+                    </div>
+                    <div class="result-amount" id="deseosAmount">$600</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-category">
+                        <span class="category-icon">💰</span>
+                        <span>Ahorro e Inversión</span>
+                    </div>
+                    <div class="result-amount" id="ahorroAmount">$400</div>
+                </div>
+                
+                <p class="motivation-message" id="budgetMessage">¡Bien hecho! Estás en el camino correcto hacia la libertad financiera.</p>
+            </div>
+        </div>
+        
+        <div class="card tips-section">
+            <h2 class="card-title">
+                <span>💡</span>
+                Consejos del Profesor Sabio
+            </h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-title">
+                        <span>📱</span>
+                        Automatiza tus finanzas
+                    </div>
+                    <p>Configura transferencias automáticas a tu cuenta de ahorros el día que recibes tu salario. Así no tendrás tentación de gastarlo.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">
+                        <span>🔍</span>
+                        Revisa tus gastos
+                    </div>
+                    <p>Dedica 15 minutos cada semana a revisar en qué estás gastando tu dinero. Identifica patrones y oportunidades para ahorrar.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">
+                        <span>🎯</span>
+                        Establece metas claras
+                    </div>
+                    <p>Como Bruno con su guitarra, define exactamente qué quieres lograr y calcula cuánto necesitas ahorrar regularmente.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">
+                        <span>🚀</span>
+                        Busca ingresos adicionales
+                    </div>
+                    <p>Como Elena, explora formas de generar dinero extra. Pequeños emprendimientos pueden acelerar mucho tus metas financieras.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card personajes-section">
+            <h2 class="card-title">
+                <span>🎭</span>
+                Aprende de los Personajes
+            </h2>
+            <div class="personajes-grid">
+                <div class="personaje-card">
+                    <div class="personaje-icon">👩‍💼</div>
+                    <div class="personaje-name">Ana</div>
+                    <p>Aprendió a controlar sus gastos impulsivos con el método 50/30/20.</p>
+                </div>
+                <div class="personaje-card">
+                    <div class="personaje-icon">🎸</div>
+                    <div class="personaje-name">Bruno</div>
+                    <p>Logró comprar su guitarra estableciendo metas de ahorro claras.</p>
+                </div>
+                <div class="personaje-card">
+                    <div class="personaje-icon">📈</div>
+                    <div class="personaje-name">Claudia</div>
+                    <p>Venció su miedo a invertir y ahora hace crecer su dinero.</p>
+                </div>
+                <div class="personaje-card">
+                    <div class="personaje-icon">🍰</div>
+                    <div class="personaje-name">Elena</div>
+                    <p>Emprendió su negocio empezando pequeño y escalando gradualmente.</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Mi Ruta McPato - Parte de la obra "La Lección del Tío McPato"</p>
+            <p class="motivation-message">"La educación financiera no se trata de hacerse rico rápido, sino de tomar el control de tu futuro"</p>
+            <p>© 2023 - Educación Financiera para Todos</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBudget');
+            const resultsCard = document.getElementById('resultsCard');
+            const monthlyIncomeInput = document.getElementById('monthlyIncome');
+            
+            calculateBtn.addEventListener('click', function() {
+                const monthlyIncome = parseFloat(monthlyIncomeInput.value);
+                
+                if (!monthlyIncome || monthlyIncome <= 0) {
+                    alert('Por favor, ingresa un monto válido para tus ingresos mensuales.');
+                    return;
+                }
+                
+                // Cálculos según la regla 50/30/20
+                const necesidades = monthlyIncome * 0.5;
+                const deseos = monthlyIncome * 0.3;
+                const ahorro = monthlyIncome * 0.2;
+                
+                // Mostrar resultados
+                document.getElementById('necesidadesAmount').textContent = `$${necesidades.toFixed(2)}`;
+                document.getElementById('deseosAmount').textContent = `$${deseos.toFixed(2)}`;
+                document.getElementById('ahorroAmount').textContent = `$${ahorro.toFixed(2)}`;
+                
+                // Mensaje personalizado
+                const budgetMessage = document.getElementById('budgetMessage');
+                if (monthlyIncome < 1000) {
+                    budgetMessage.textContent = 'Cada peso cuenta. Enfócate en cubrir tus necesidades básicas y ahorra lo que puedas.';
+                } else if (monthlyIncome < 3000) {
+                    budgetMessage.textContent = '¡Bien hecho! Estás en el camino correcto hacia la libertad financiera.';
+                } else {
+                    budgetMessage.textContent = 'Tienes un buen ingreso. Asegúrate de invertir una parte de tus ahorros para hacer crecer tu patrimonio.';
+                }
+                
+                // Mostrar la tarjeta de resultados
+                resultsCard.classList.add('active');
+                
+                // Desplazarse suavemente a los resultados
+                resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            
+            // Efecto de entrada para los elementos
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Aplicar a las tarjetas de consejos y personajes
+            document.querySelectorAll('.tip-card, .personaje-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

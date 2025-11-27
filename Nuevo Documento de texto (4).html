@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Banco de la Laguna - Calculadora de Metas</title>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #ffcc00;
+            --accent: #00cc99;
+            --light: #f0f8ff;
+            --dark: #003366;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .calculator-card, .results-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--secondary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: var(--dark);
+        }
+        
+        .results-card {
+            display: none;
+        }
+        
+        .results-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8fbff;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .tips-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .tip-card {
+            background: #f8fbff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        .motivation-message {
+            font-style: italic;
+            margin: 15px 0;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">💰</div>
+                <div>
+                    <h1>El Banco de la Laguna</h1>
+                    <p class="tagline">Tu calculadora personal de metas financieras</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="calculator-card">
+                <h2 class="card-title">
+                    <span>🏆</span>
+                    Calculadora de Metas
+                </h2>
+                <p>Como Bruno con su guitarra, establece tu meta y te diremos exactamente cuánto necesitas ahorrar cada día.</p>
+                
+                <div class="form-group">
+                    <label for="goalName">¿Qué quieres comprar o lograr?</label>
+                    <input type="text" id="goalName" placeholder="Ej: Guitarra profesional, Viaje a la playa, Laptop nueva">
+                </div>
+                
+                <div class="form-group">
+                    <label for="goalAmount">Costo total de tu meta ($)</label>
+                    <input type="number" id="goalAmount" placeholder="Ej: 1000" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="currentSavings">Ahorro actual ($)</label>
+                    <input type="number" id="currentSavings" placeholder="Ej: 100" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeframe">¿En cuánto tiempo quieres lograrlo?</label>
+                    <select id="timeframe">
+                        <option value="30">1 mes</option>
+                        <option value="60">2 meses</option>
+                        <option value="90" selected>3 meses</option>
+                        <option value="180">6 meses</option>
+                        <option value="365">1 año</option>
+                        <option value="730">2 años</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customDaysContainer" style="display: none;">
+                    <label for="customDays">Número de días</label>
+                    <input type="number" id="customDays" placeholder="Ej: 45" min="1">
+                </div>
+                
+                <button id="calculateBtn">Calcular mi plan de ahorro</button>
+            </div>
+            
+            <div class="results-card" id="resultsCard">
+                <h2 class="card-title">
+                    <span>📊</span>
+                    Tu Plan de Ahorro
+                </h2>
+                
+                <div class="result-item">
+                    <div class="result-label">Para tu meta:</div>
+                    <div class="result-value" id="resultGoalName">Guitarra profesional</div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="savingsProgress" style="width: 10%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="currentProgress">$0</span>
+                        <span id="totalGoal">$1000</span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Debes ahorrar diariamente:</div>
+                    <div class="result-value" id="resultDaily">$11.11</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Debes ahorrar semanalmente:</div>
+                    <div class="result-value" id="resultWeekly">$77.78</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Debes ahorrar mensualmente:</div>
+                    <div class="result-value" id="resultMonthly">$333.33</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Fecha estimada para lograr tu meta:</div>
+                    <div class="result-value" id="resultDate">15 de octubre, 2023</div>
+                </div>
+                
+                <p class="motivation-message" id="motivationMessage">¡Tú puedes! Cada pequeño ahorro te acerca a tu meta.</p>
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <h2 class="card-title">
+                <span>💡</span>
+                Consejos del Profesor Sabio
+            </h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-title">Automatiza tus ahorros</div>
+                    <p>Configura una transferencia automática el día que recibes tu dinero. Así el ahorro será tu prioridad.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">Reduce gastos hormiga</div>
+                    <p>Identifica esos pequeños gastos diarios que suman mucho al mes. ¿Realmente necesitas ese café fuera?</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">Celebra los hitos</div>
+                    <p>Cuando alcances el 25%, 50% o 75% de tu meta, celébralo (sin gastar mucho). ¡Mantén la motivación!</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">Busca ingresos extra</div>
+                    <p>Como Elena, considera formas de generar dinero adicional: venta de productos, servicios freelance, etc.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>El Banco de la Laguna - Parte de la obra "La Lección del Tío McPato"</p>
+            <p>© 2023 - Educación Financiera para Todos</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resultsCard = document.getElementById('resultsCard');
+            const timeframeSelect = document.getElementById('timeframe');
+            const customDaysContainer = document.getElementById('customDaysContainer');
+            
+            // Mostrar/ocultar campo de días personalizados
+            timeframeSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customDaysContainer.style.display = 'block';
+                } else {
+                    customDaysContainer.style.display = 'none';
+                }
+            });
+            
+            // Calcular el plan de ahorro
+            calculateBtn.addEventListener('click', function() {
+                const goalName = document.getElementById('goalName').value || 'Tu meta';
+                const goalAmount = parseFloat(document.getElementById('goalAmount').value);
+                const currentSavings = parseFloat(document.getElementById('currentSavings').value) || 0;
+                
+                let days;
+                if (timeframeSelect.value === 'custom') {
+                    days = parseInt(document.getElementById('customDays').value);
+                } else {
+                    days = parseInt(timeframeSelect.value);
+                }
+                
+                // Validaciones
+                if (!goalAmount || goalAmount <= 0) {
+                    alert('Por favor, ingresa un costo válido para tu meta.');
+                    return;
+                }
+                
+                if (!days || days <= 0) {
+                    alert('Por favor, ingresa un período de tiempo válido.');
+                    return;
+                }
+                
+                if (currentSavings > goalAmount) {
+                    alert('¡Felicidades! Ya tienes suficiente dinero para tu meta.');
+                    return;
+                }
+                
+                // Cálculos
+                const remainingAmount = goalAmount - currentSavings;
+                const dailySavings = remainingAmount / days;
+                const weeklySavings = dailySavings * 7;
+                const monthlySavings = dailySavings * 30;
+                
+                // Fecha estimada
+                const today = new Date();
+                const goalDate = new Date();
+                goalDate.setDate(today.getDate() + days);
+                
+                // Mostrar resultados
+                document.getElementById('resultGoalName').textContent = goalName;
+                document.getElementById('resultDaily').textContent = `$${dailySavings.toFixed(2)}`;
+                document.getElementById('resultWeekly').textContent = `$${weeklySavings.toFixed(2)}`;
+                document.getElementById('resultMonthly').textContent = `$${monthlySavings.toFixed(2)}`;
+                document.getElementById('resultDate').textContent = formatDate(goalDate);
+                
+                // Actualizar barra de progreso
+                const progressPercentage = (currentSavings / goalAmount) * 100;
+                document.getElementById('savingsProgress').style.width = `${progressPercentage}%`;
+                document.getElementById('currentProgress').textContent = `$${currentSavings}`;
+                document.getElementById('totalGoal').textContent = `$${goalAmount}`;
+                
+                // Mensaje motivacional personalizado
+                const motivationMessage = document.getElementById('motivationMessage');
+                if (progressPercentage >= 100) {
+                    motivationMessage.textContent = '¡Felicidades! Has alcanzado tu meta.';
+                } else if (progressPercentage >= 75) {
+                    motivationMessage.textContent = '¡Estás muy cerca! Sigue así, ya casi lo logras.';
+                } else if (progressPercentage >= 50) {
+                    motivationMessage.textContent = '¡Vas por la mitad! Mantén el ritmo.';
+                } else if (progressPercentage >= 25) {
+                    motivationMessage.textContent = 'Buen comienzo. Cada día te acerca más a tu meta.';
+                } else {
+                    motivationMessage.textContent = '¡Tú puedes! Cada pequeño ahorro te acerca a tu meta.';
+                }
+                
+                // Mostrar la tarjeta de resultados
+                resultsCard.classList.add('active');
+                
+                // Desplazarse suavemente a los resultados
+                resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            
+            // Función para formatear fecha
+            function formatDate(date) {
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                return date.toLocaleDateString('es-ES', options);
+            }
+        });
+    </script>
+</body>
+</html>
